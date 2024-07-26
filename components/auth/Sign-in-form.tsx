@@ -10,16 +10,17 @@ import {
 } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {  SignUpSchema } from "@/lib/validation";
+import {  LoginSchema} from "@/lib/validation";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { signup } from "@/app/(auth)/sign-up/actions";
 import LoadingButton from "../LoadingButton";
 import { signin } from "@/app/(auth)/sign-in/actions";
+import Link from "next/link";
 
 const SignInForm = () => {
   const form = useForm({
-    resolver: zodResolver(SignUpSchema),
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       username: "",
@@ -32,6 +33,7 @@ const SignInForm = () => {
     // Your submission logic here
     setError(undefined);
     startTranstions(async()=>{
+      //@ts-ignore
       const {error} = await signin(data);
       if(error) setError(error);
     })
@@ -70,9 +72,11 @@ const SignInForm = () => {
         />
               {error &&               <p className="w-full bg-destructive/15 text-destructive flex items-center py-2 justify-center rounded-md">Somthing went wrong</p>
        }
-        <LoadingButton loading={ispending} type="submit">
+        <LoadingButton  disabled={ispending} loading={ispending} type="submit">
           Login
         </LoadingButton>
+        <Link href={'/sign-up'} className="text-blue-600">Don&apos;t have an account.<span className="underline">Create one?</span></Link>
+
       </form>
     </Form>
   );

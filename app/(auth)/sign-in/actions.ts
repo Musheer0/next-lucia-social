@@ -37,7 +37,7 @@ import { redirect } from 'next/navigation';
     }
     catch(error){
       console.error(error)
-        if(isRedirectError(error)) throw error;
+        if(isRedirectError(error)) return;
         console.error(error);
       return {error: 'somthin went wrong '}
     }

@@ -1,3 +1,4 @@
+import SignInForm from '@/components/auth/Sign-in-form'
 import { Metadata } from 'next'
 import React from 'react'
 
@@ -6,8 +7,9 @@ export const metadata:Metadata ={
 }
 const page = () => {
   return (
-    <div className='w-full h-screen flex items-center justify-center'>
-    </div>  )
+ <>
+       <SignInForm/>
+ </>  )
 }
 
 export default page

@@ -25,12 +25,22 @@ model User {
   sessions  Session[]
   password String?
   createdAt DateTime @default(now())
+  posts  Post[]
   @@map("user")
 }
 model Session{
   id String @id @default(cuid())
   userId String
   expiresAt DateTime?
-  User    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@map("session")
+}
+model Post{
+  id String @id @default(cuid())
+  caption String
+  userId String
+  user User @relation(fields: [userId], references: [id],onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@map("post")
 }

@@ -15,6 +15,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { signup } from "@/app/(auth)/sign-up/actions";
 import LoadingButton from "../LoadingButton";
+import Link from "next/link";
 
 const SignUpForm = () => {
   const form = useForm({
@@ -38,7 +39,7 @@ const SignUpForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-2 w-full max-w-[500px] p-2  ">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col rounded-md gap-2 w-full max-w-[500px]  ">
         <FormField
           control={form.control}
           name="username"
@@ -59,7 +60,7 @@ const SignUpForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email" className="py-4" type="email" {...field} />
+                <Input placeholder="Email" type="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -80,9 +81,10 @@ const SignUpForm = () => {
         />
        {error &&               <p className="w-full bg-destructive/15 text-destructive flex items-center py-2 justify-center rounded-md">{error}</p>
        }
-        <LoadingButton loading={ispending} type="submit">
+        <LoadingButton disabled={ispending} loading={ispending} type="submit">
           Login
         </LoadingButton>
+        <Link href={'/sign-in'} className="text-blue-600">Already have an account?<span className="underline">Login?</span></Link>
       </form>
     </Form>
   );

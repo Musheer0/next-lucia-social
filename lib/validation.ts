@@ -12,3 +12,6 @@ export const LoginSchema = z.object({
 })
 // export Type  SignUpValues = z.infer<typeof SignUpSchema>
 // export Type  SignInValues = z.infer<typeof LoginSchema>
+export const PostSchema = z.object({
+    caption :RequiredString
+})

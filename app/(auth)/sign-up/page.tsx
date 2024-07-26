@@ -7,9 +7,9 @@ export const medatadata:Metadata= {
 }
 const page = () => {
   return (
-    <div className='w-full h-screen flex items-center justify-center'>
-        <SignUpForm/>
-    </div>
+<>
+<SignUpForm/>
+</>
   )
 }
 
