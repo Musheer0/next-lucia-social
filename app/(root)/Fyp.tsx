@@ -1,27 +1,46 @@
 "use client"
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import Post from '@/components/post/Post';
-import { PostData } from '@/lib/type';
-import { Loader2 } from 'lucide-react';
+import {PostsPage } from '@/lib/type';
 import post_feed_instanse from '@/lib/ky';
+import InfiniteScrollingContainer from '@/components/InfiniteScrollingContainer';
+import PostPageLoader from '@/components/post/PostPageLoader';
+import { useSession } from './SessionProvider';
 
 const Fyp = () => {
-  const { data, error, isLoading, status } = useQuery<PostData[]>({
+  const session = useSession()
+  const { data, error, isLoading, status, fetchNextPage, isFetchingNextPage, hasNextPage  } = useInfiniteQuery({
     queryKey: ['fyp', 'get-posts'],
-    queryFn:post_feed_instanse.get('/api/posts/fyp').json<PostData[]>
+    queryFn:({pageParam})=>post_feed_instanse.get('/api/posts/fyp', 
+      pageParam? {
+         searchParams:
+        {
+          cursor: pageParam
+
+        }
+      }:{}).json<PostsPage>(),
+    initialPageParam: null as string |null,
+    getNextPageParam:(lastpage) => lastpage.nextCursor
   });
 
-  if (isLoading) return <div><Loader2 className='animate-spin' /></div>;
-  if (error) return <p>Something went wrong error: {error.message}</p>;
+  if (isLoading) return<PostPageLoader/>;
+  if (error) return <p className='text-red-600 '>Something went wrong error: {error.message}</p>;
 
   return (
     <div className="body flex flex-col gap-2">
-
-      {data?.map((e) => (
-        <Post post={e} key={e.id} />
+   <InfiniteScrollingContainer onScrollEnd={()=>{
+     if(hasNextPage && !isFetchingNextPage) fetchNextPage();
+     else return;
+    }} className="body flex flex-col gap-2" >
+   {(data?.pages.flatMap((page)=>page.posts)|| []).map((e) => (
+        <Post post={e} key={e.id} showactions={e.userId===session.user.id}/>
       ))}
+   </InfiniteScrollingContainer>
+      {      isFetchingNextPage && <PostPageLoader/>}
+
     </div>
+
   );
 }
 

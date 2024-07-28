@@ -2,6 +2,7 @@
 
 import { validaterequest } from "@/auth"
 import db from "@/lib/prisma";
+import { postDataInclude } from "@/lib/type";
 import { PostSchema } from "@/lib/validation";
 
 export async function CreatePost(input:string){
@@ -12,7 +13,7 @@ export async function CreatePost(input:string){
         const post = await db.post.create({data:{
             caption: caption,
            userId: user.id
-        }});
+        }, include: postDataInclude});
         return post;
     }
 }

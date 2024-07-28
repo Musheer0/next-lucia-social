@@ -7,7 +7,7 @@ interface LoadingButton extends ButtonProps{
 }
 const LoadingButton = ({loading, disabled, className, ...props}:LoadingButton) => {
   return (
-    <Button disabled={disabled} className={cn('flex items-center gap-2 py-6 rounded-xl', className)} {...props}>
+    <Button disabled={disabled} className={cn('flex items-center gap-2  rounded-xl', className)} {...props}>
          {loading ? <>
          
          

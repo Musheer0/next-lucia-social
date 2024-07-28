@@ -44,3 +44,11 @@ model Post{
 
   @@map("post")
 }
+model Follow{
+  followingId  String
+  following User @relation("Following", references: [id], fields: [id] , onDelete: Cascade)
+  followerId  String
+  follower User @relation("Following", references: [id], fields: [id] , onDelete: Cascade)
+ @@unique([followerId, followingId])
+ @@map("follows")
+}

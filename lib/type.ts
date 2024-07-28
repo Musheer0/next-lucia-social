@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Post, Prisma } from "@prisma/client";
 export const UserDataSelect = {
   username:true,
   avatar: true,
@@ -11,3 +11,8 @@ export const postDataInclude= {
       }
 } satisfies Prisma.PostInclude
 export type PostData = Prisma.PostGetPayload<{include: typeof postDataInclude}>
+
+export interface PostsPage{
+  posts: PostData[],
+  nextCursor : string | null | undefined
+}

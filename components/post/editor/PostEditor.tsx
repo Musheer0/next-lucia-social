@@ -9,14 +9,14 @@ import { useSession } from '@/app/(root)/SessionProvider'
 import UserAvatar from '../../UserAvatar'
 import './style.css'
 import { useToast } from '@/components/ui/use-toast'
+import { useSubmitPostMutation } from '../../../app/(root)/mutation'
 const PostEditor = () => {
    const [isLoading,setIsLoading] = useState(false)
    const {user}= useSession()
+   const mutation = useSubmitPostMutation();
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
-                bold: false,
-                italic: false
             }),
             Placeholder.configure({
                 placeholder: 'enter something hot....'
@@ -30,15 +30,21 @@ const PostEditor = () => {
     })||""
     const handleSubmit = async()=>{
         if(input.trim()==="") return;
-        setIsLoading(true)
-
-        const post = await CreatePost(input);
-        console.log(post);
+        setIsLoading(true);
+      mutation.mutate(input,{
+            
+        onSuccess:()=>{
+            
+            toast({
+                title: 'posted successfully!',
+            })
+            setIsLoading(false);
+        },
+        
+    })
         editor?.commands.clearContent();
         setIsLoading(false);
-        toast({
-            title: 'posted successfully!'
-        })
+
     }
   return (
     <div className='flex flex-col items-end  bg-card rounded-lg h-fit p-4 gap-2 shadow-md w-full'>
@@ -46,7 +52,7 @@ const PostEditor = () => {
             <UserAvatar url={user.avatarUrl} size={44}/>
             <EditorContent   editor={editor} className='bg-background max-h-[240px] overflow-auto flex-1 p-2 rounded-xl'/>
         </div>
-        <LoadingButton loading={isLoading} disabled={isLoading} onClick={handleSubmit}>
+        <LoadingButton loading={mutation.isPending} disabled={mutation.isPending} onClick={handleSubmit}>
             Post
         </LoadingButton>
     </div>

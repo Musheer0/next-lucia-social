@@ -40,13 +40,12 @@ export default async function RootLayout({
       <ReactQueryProvide>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <Navbar/>
-       <main className="w-full flex-1 max-h-screen sm:flex items-start gap-2 py-2 overflow-auto bg-inherit px-2">
+       <main className="w-full flex-1  sm:flex items-start gap-2 py-2 overflow-auto bg-inherit px-2">
         <MenuBar className=" sticky top-0 justify-between hidden sm:flex  flex-col  rounded-xl  "/>
-    
-       {children}
-    
+         {children}
+
        <Toaster/>
-       <MenuBar className=" sticky justify-between w-full rounded-xl sm:hidden bottom-2  flex "/>
+       <MenuBar className=" sticky justify-between w-full rounded-xl sm:hidden bottom-0  flex "/>
 
        </main>
       </ThemeProvider>

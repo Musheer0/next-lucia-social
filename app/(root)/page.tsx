@@ -8,8 +8,8 @@ import Fyp from './Fyp'
 
 const page = async() => {
   return (
-    <div className='flex  h-full w-full gap-1 py-1'>
- <div className="flex  h-full w-full flex-col gap-2 py-1">
+    <div className='flex   w-full gap-1 py-1'>
+ <div className="flex  w-full flex-col gap-2 py-1">
  <PostEditor/>
  <Fyp/>
  </div>
