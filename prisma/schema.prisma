@@ -5,50 +5,60 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
+
 model User {
-  id String @id @default(cuid())
-  name String?
-  username String @unique
-  email String? @unique
-  bio    String? 
-  googleId String? @unique
-  avatar String?
+  id        String    @id @default(cuid())
+  name      String?
+  username  String    @unique
+  email     String?   @unique
+  bio       String?
+  googleId  String?   @unique
+  avatar    String?
   sessions  Session[]
-  password String?
-  createdAt DateTime @default(now())
-  posts  Post[]
+  password  String?
+  createdAt DateTime  @default(now())
+  posts     Post[]
+  followers  Follow[] @relation("Follower")
+  following Follow[] @relation("Following")
+  follower_count  BigInt @default(0)
+  following_count  BigInt @default(0)
   @@map("user")
 }
-model Session{
-  id String @id @default(cuid())
-  userId String
+
+model Session {
+  id        String    @id @default(cuid())
+  userId    String
   expiresAt DateTime?
-  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@map("session")
 }
-model Post{
-  id String @id @default(cuid())
-  caption String
-  userId String
-  user User @relation(fields: [userId], references: [id],onDelete: Cascade)
+
+model Post {
+  id        String   @id @default(cuid())
+  caption   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@map("post")
 }
-model Follow{
-  followingId  String
-  following User @relation("Following", references: [id], fields: [id] , onDelete: Cascade)
+
+model Follow {
+  followingId String
+  following   User   @relation("Following", references: [id], fields: [followingId], onDelete: Cascade)
   followerId  String
-  follower User @relation("Following", references: [id], fields: [id] , onDelete: Cascade)
- @@unique([followerId, followingId])
- @@map("follows")
+  follower    User   @relation("Follower", references: [id], fields: [followerId], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@map("follows")
 }

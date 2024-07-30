@@ -11,7 +11,6 @@ import './style.css'
 import { useToast } from '@/components/ui/use-toast'
 import { useSubmitPostMutation } from '../../../app/(root)/mutation'
 const PostEditor = () => {
-   const [isLoading,setIsLoading] = useState(false)
    const {user}= useSession()
    const mutation = useSubmitPostMutation();
     const editor = useEditor({
@@ -30,7 +29,6 @@ const PostEditor = () => {
     })||""
     const handleSubmit = async()=>{
         if(input.trim()==="") return;
-        setIsLoading(true);
       mutation.mutate(input,{
             
         onSuccess:()=>{
@@ -38,12 +36,10 @@ const PostEditor = () => {
             toast({
                 title: 'posted successfully!',
             })
-            setIsLoading(false);
         },
         
     })
         editor?.commands.clearContent();
-        setIsLoading(false);
 
     }
   return (

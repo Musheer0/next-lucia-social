@@ -8,6 +8,7 @@ import { unstable_cache } from 'next/cache';
 import { FormatNumber } from '@/lib/utils';
 import { count } from 'console';
 import Link from 'next/link';
+import FollowButton from '../FollowButton';
 
 const SideBar = () => {
   return (
@@ -29,11 +30,15 @@ async function WhoToFollow(){
     const users = await db.user.findMany({
         where: {
             NOT: {
-                id : user.id
-            
+                id : user.id,
+             followers: {
+                none: {
+                    followerId: user.id
+                }
+             }
             }
         },
-        select:UserDataSelect,
+        select:UserDataSelect(user.id),
         take:6
     })
     return (
@@ -48,7 +53,10 @@ async function WhoToFollow(){
                         <p className='text-lg font-semibold leading-none line-clamp-1 break-all'>{e.username}</p>
                         <p className='text-muted-foreground text-sm leading-none'>{e.name}</p>
                     </div>
-                    <Button>Follow</Button>
+                   <FollowButton userId={user.id} initialState={{
+                    followers: e.follower_count,
+                    isFollowedByUser: e.followers.some((id)=>id.followerId===user.id)
+                   }}/>
                 </div>
               })}
         </div>

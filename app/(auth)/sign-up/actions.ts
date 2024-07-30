@@ -10,12 +10,7 @@ import { redirect } from 'next/navigation';
 export const signup = async(credentials:{username:string, email:string, password:string})=>{
     try{
      const {username, email, password} = SignUpSchema.parse(credentials);
-      const hashed_pass = await hash(password,{
-        memoryCost: 19456,
-        timeCost: 2,
-        outputLen:32,
-        parallelism:1
-      });
+  
       const existingUsername = await db.user.findFirst({where: {
         username: {
             equals: username,
@@ -30,7 +25,12 @@ export const signup = async(credentials:{username:string, email:string, password
         }
       }});
       if(existingEmail) return {error : 'user already exists'};
-
+      const hashed_pass = await hash(password,{
+        memoryCost: 19456,
+        timeCost: 2,
+        outputLen:32,
+        parallelism:1
+      });
       const  userId = await generateIdFromEntropySize(10);
       await db.user.create({
         //@ts-ignore
