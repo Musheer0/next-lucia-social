@@ -42,19 +42,31 @@ export async function POST(req:Request,
         try{
             const {user:LoggedInUser} = await validaterequest();
             if(!LoggedInUser) return Response.json({error: 'Access Denied'},{status:401})
-            await  db.follow.upsert({
+         const entry =    await  db.follow.upsert({
            where:{
                followerId_followingId:{
-                followerId: LoggedInUser.id,
-                followingId: id
+                followerId: id,
+                followingId: LoggedInUser.id
                }
            },
         create:{
-            followerId: LoggedInUser.id,
-            followingId: id
+            followerId:id,
+            followingId: LoggedInUser.id
         },  
         update:{}
         });
+        if(entry.followingId){
+            await db.user.update({where: {id}, data: {
+                follower_count: {
+                    increment: 1
+                }
+            }})
+            await db.user.update({where: {id:LoggedInUser.id}, data: {
+                following_count: {
+                   increment: 1
+                }
+            }})
+        }
         return new  Response();
         }
         catch{
@@ -74,6 +86,16 @@ export async function DELETE(req:Request,
             followerId: LoggedInUser.id,
             followingId: id 
         }});
+        await db.user.update({where: {id}, data: {
+            follower_count: {
+                decrement: 1
+            }
+        }})
+        await db.user.update({where: {id:LoggedInUser.id}, data: {
+            following_count: {
+                decrement: 1
+            }
+        }})
         return new  Response();
         }
         catch{

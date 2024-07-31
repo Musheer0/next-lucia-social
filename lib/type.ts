@@ -5,17 +5,29 @@ export const UserDataSelect = (session:string)=>{
     avatar: true,
     name: true,
     id: true,
+    bio: true,
     followers:{
       where: {
           followerId: session
       },
       select: {
           followerId: true
-      }
+      },
+      
   },
-  follower_count: true
+  _count:{
+    select:{
+      posts: true
+    }
+  },
+  follower_count: true,
+  following_count: true,
+  createdAt:true
   } satisfies Prisma.UserSelect
 }
+export type UserDataProfile = Prisma.UserGetPayload<{
+  select: ReturnType<typeof UserDataSelect>
+}>
 export const postDataInclude= {
     user:{
         select:{

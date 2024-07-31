@@ -6,6 +6,7 @@ import formatTimeDifference from '@/lib/FormatDate'
 import { Button } from '../ui/button'
 import { Ellipsis } from 'lucide-react'
 import PostActions from './PostActions'
+import LinkiFy from '../LinkiFy'
 
 interface PostProps{
     post:PostData,
@@ -27,7 +28,9 @@ const Post = ({post,showactions}: PostProps) => {
             </div>}
         </div>
         <div className="body">
-                <p className='whitespace-pre-wrap'>{post.caption}</p>
+               <LinkiFy>
+               <p className='whitespace-pre-wrap'>{post.caption}</p>
+               </LinkiFy>
             </div>
     </article>
   )

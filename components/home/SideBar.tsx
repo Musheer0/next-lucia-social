@@ -1,5 +1,5 @@
 import { validaterequest } from '@/auth'
-import React, { Suspense } from 'react'
+import React, { Suspense, use } from 'react'
 import { UserDataSelect } from "@/lib/type";
 import db from '@/lib/prisma';
 import UserAvatar from '../UserAvatar';
@@ -12,7 +12,7 @@ import FollowButton from '../FollowButton';
 
 const SideBar = () => {
   return (
-    <div className='bg-card p-3 sticky top-0 rounded-lg h-fit'>
+    <div className='bg-card p-3 sticky top-0 min-w-[250px] rounded-lg h-fit'>
         <Suspense fallback="Loading">
             <WhoToFollow/>
             <hr/>
@@ -31,16 +31,18 @@ async function WhoToFollow(){
         where: {
             NOT: {
                 id : user.id,
-             followers: {
+           
+            },
+            followers: {
                 none: {
-                    followerId: user.id
+                   followingId: user.id
                 }
              }
-            }
         },
         select:UserDataSelect(user.id),
         take:6
     })
+    if(users.length<1) return <></>; 
     return (
         <div className='min-w-[300px]'>
             <h1 className='font-bold whitespace-nowrap '>Who to follow</h1>
@@ -53,7 +55,7 @@ async function WhoToFollow(){
                         <p className='text-lg font-semibold leading-none line-clamp-1 break-all'>{e.username}</p>
                         <p className='text-muted-foreground text-sm leading-none'>{e.name}</p>
                     </div>
-                   <FollowButton userId={user.id} initialState={{
+                   <FollowButton userId={e.id} initialState={{
                     followers: e.follower_count,
                     isFollowedByUser: e.followers.some((id)=>id.followerId===user.id)
                    }}/>
@@ -86,9 +88,9 @@ async function TrendingTopics(){
     const topics = await getTrendingLists();
     return ( 
         <div className='flex flex-col gap-2 py-2'>
-            <h1 className='font-semibold'>Trending topics</h1>
+            <h1 className='font-semibold whitespace-nowrap'>Trending topics</h1>
             {topics.map((e, i)=>{
-                return <Link href={'/trending/'+e.hashtag}><div key={i} className='text-sm text-muted-foreground'><p className='text-md text-white hover:underline'>{e.hashtag}</p><p>{FormatNumber(e.count)} {e.count===1 ? 'post':'posts'}</p></div></Link>
+                return <Link  href={'/trending/'+e.hashtag} key={i}><div  className='text-sm text-muted-foreground'><p className='text-md text-white hover:underline'>{e.hashtag}</p><p>{FormatNumber(e.count)} {e.count===1 ? 'post':'posts'}</p></div></Link>
             })}
         </div>
     )
